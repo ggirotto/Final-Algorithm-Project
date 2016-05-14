@@ -35,9 +35,9 @@ public class GenTree {
 
   public GenTree( String s, int n ) { root = new TreeNode( s, n ); }
 
-  private TreeNode find( TreeNode n, int val ) {
+  private TreeNode find( TreeNode n, String val ) {
     if ( n == null ) return null;
-    if ( n.data == val ) return n;
+    if ( n.name.equals(val) ) return n;
     Node f = n.Children();
     while ( f != null ) {
       TreeNode ax = find( f.Child(), val );
@@ -47,7 +47,7 @@ public class GenTree {
     return null;
   }
 
-  public void insert( int p, String s, int f) {
+  public void insert( String p, String s, int f) {
     TreeNode n = find( root, p );
     if ( n == null ) return;
     n.children = append( n.children, new TreeNode( s, f ) );
@@ -61,7 +61,7 @@ public class GenTree {
   private void printH( TreeNode n, int tabs ) {
 	if(n==null) return;
 	for(int i=1;i<=tabs;i++) System.out.print("  ");
-	System.out.println("<" + n.data + ">");
+	System.out.println("<" + n.name + ">");
 	//System.out.println(n.data);
 	Node f = n.Children();
     while ( f != null ) {
@@ -69,7 +69,7 @@ public class GenTree {
       f = f.Next();
     }
 	for(int i=1;i<=tabs;i++) System.out.print("  ");
-	System.out.println("</" + n.data + ">");
+	System.out.println("</" + n.name + ">");
 	//System.out.print(")");    
   }
   
@@ -83,29 +83,33 @@ public class GenTree {
      if(n == null) return;
      Node f = n.Children();
      while(f != null){
-        System.out.println(n.data + " -> " + f.Child().data);
+        System.out.println(n.name + " -> " + f.Child().name);
         printDot(f.Child());
         f = f.Next();
      }
   }
   
-  public void buildStructure(String lineBeingRead){
-      buildStructure(lineBeingRead,root);
+  // TODO verificar somente das folhas as probabilidades
+  
+  public String getBigProbability(){
+    TreeNode result = getBigProbability(root);
+    return result.name + " - " + result.data + "%"; 
   }
   
-  private void buildStructure(String lineBeingRead, TreeNode append){
-      
-      if(lineBeingRead.contains(append.name)){
-          String [] twoPointsSplit = lineBeingRead.split(":");
-          String [] spaceSplit = twoPointsSplit[1].substring(1,twoPointsSplit.length).split(" ");
-          for(int i=0; i<=spaceSplit.length; i++){
-              TreeNode aux = new TreeNode(spaceSplit[i],Integer.parseInt(spaceSplit[i+1]));
-              append(append.children,aux);
-              i = i+2;
-          }
-      }
-      
-      
+  private TreeNode getBigProbability(TreeNode n){
+    if(n.children == null) return n;
+    int percent = 0;
+    TreeNode chosen = n;
+    Node f = n.Children();
+    while(f!=null){
+        TreeNode aux = getBigProbability(f.child);
+        if(aux.data > percent){
+            percent = aux.data;
+            chosen = aux;
+        }
+        f = f.next;
+    }
+    return chosen;
   }
 
 }
