@@ -3,14 +3,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
  
 public class percentTree{
     
-    public static GenTree T;
+    private static GenTree T;
 
-    public static ArrayList<String> listaPossiveisRaizes = new ArrayList();
-    public static ArrayList<String> listaNaoRaizes = new ArrayList();
+    public static List listaPossiveisRaizes = new List();
+    public static List listaNaoRaizes = new List();
     
   public static void main(String args[]) throws Exception{
       PrintWriter writer;
@@ -25,29 +24,29 @@ public class percentTree{
         twoPointsSplit[0] = twoPointsSplit[0].split(" ")[0];
         twoPointsSplit[1] = twoPointsSplit[1].substring(1);
         
-        listaPossiveisRaizes.add(twoPointsSplit[0]);
+        listaPossiveisRaizes.insert(twoPointsSplit[0]);
         
         String [] espaceSplit = twoPointsSplit[1].split(" ");
         
         for(int i=0; i<= espaceSplit.length-1; i++){
             if(!(espaceSplit[i].matches("[0-9]+"))){
-                if(listaPossiveisRaizes.contains(espaceSplit[i]))
+                if(listaPossiveisRaizes.exist(espaceSplit[i]))
                     listaPossiveisRaizes.remove(espaceSplit[i]);
-                listaNaoRaizes.add(espaceSplit[i]);
+                listaNaoRaizes.insert(espaceSplit[i]);
             }
                 
         }
         
         lineBeingRead = lerArq.readLine();
-        
       }
       
-      for(int i=0; i<=listaPossiveisRaizes.size(); i++){
-        if(listaPossiveisRaizes.size() == 1) break;
+      for(int i=0; i<listaPossiveisRaizes.getSize(); i++){
+        if(listaPossiveisRaizes.getSize() == 1) break;
         String iPossiveisRaizes = listaPossiveisRaizes.get(i);
-        for(String iNaoRaizes : listaNaoRaizes){
+        for(int j=0; j<listaNaoRaizes.getSize(); j++){
+            String iNaoRaizes = listaNaoRaizes.get(j);
             if(iNaoRaizes.equals(iPossiveisRaizes)){
-                listaPossiveisRaizes.remove(iPossiveisRaizes);
+                listaPossiveisRaizes.remove(iNaoRaizes);
                 i = i-1;
                 break;
             }
@@ -61,10 +60,10 @@ public class percentTree{
       
       buildStructure(raiz,100);
       
-      T.printDot();
+      //T.printDot();
       
-      //System.out.println("Nodo Raiz: " + raiz);
-      //System.out.println("Nodo com maior probabilidade de ocorrer: " + T.getBigProbability());
+      System.out.println("Nodo Raiz: " + raiz);
+      System.out.println("Nodo com maior probabilidade de ocorrer: " + T.getBigProbability());
  
   }
   
