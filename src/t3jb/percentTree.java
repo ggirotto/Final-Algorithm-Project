@@ -14,7 +14,7 @@ public class percentTree{
     
   public static void main(String args[]) throws Exception{
       PrintWriter writer;
-      FileReader fileRead = new FileReader("casos/caso215");
+      FileReader fileRead = new FileReader("casos/caso110");
       BufferedReader lerArq = new BufferedReader(fileRead);
       String lineBeingRead = lerArq.readLine(); // lê a primeira linha
       
@@ -61,14 +61,15 @@ public class percentTree{
       
       buildStructure(raiz,100);
       
-      //T.printDot();
+      T.printDot();
       
-      System.out.println(T.getBigProbability());
+      //System.out.println("Nodo Raiz: " + raiz);
+      //System.out.println("Nodo com maior probabilidade de ocorrer: " + T.getBigProbability());
  
   }
   
   private static void buildStructure(String append,int percent) throws IOException{
-      FileReader fileRead = new FileReader("teste.txt");
+      FileReader fileRead = new FileReader("casos/caso110");
       BufferedReader lerArq = new BufferedReader(fileRead);
       String lineBeingRead = lerArq.readLine(); // lê a primeira linha
       if(lineBeingRead == null) return;
