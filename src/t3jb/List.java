@@ -79,10 +79,7 @@ public boolean exist(String val){
 
 private boolean exist(String val, Node p){
 	if(p == null) return false;
-	if(p.data.equals(val)){
-
-	return true;
-	}
+	if(p.data.equals(val)) return true;
 	return exist(val, p.next);
 }
 

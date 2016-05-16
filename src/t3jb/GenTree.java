@@ -57,10 +57,12 @@ public class GenTree {
   public void appendThree(TreeNode n, Node listaFilhos){
       if(listaFilhos==null){
           listaFilhos = new Node(n);
+          this.root.children = listaFilhos;
           return;
       }
       while(listaFilhos.next != null) listaFilhos = listaFilhos.next;
       listaFilhos.next = new Node (n);
+      this.root.children = listaFilhos;
   }
 
   public GenTree( String s, int n ) { root = new TreeNode( s, n ); }
