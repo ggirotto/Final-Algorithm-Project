@@ -15,7 +15,7 @@ public class percentTree{
     
   public static void main(String args[]) throws Exception{
       PrintWriter writer;
-      FileReader fileRead = new FileReader("casos/caso108");
+      FileReader fileRead = new FileReader("what.txt");
       BufferedReader lerArq = new BufferedReader(fileRead);
       String lineBeingRead = lerArq.readLine(); // lê a primeira linha
       
