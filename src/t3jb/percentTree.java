@@ -3,17 +3,19 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
  
 public class percentTree{
     
     private static GenTree T;
 
-    public static List listaPossiveisRaizes = new List();
-    public static List listaNaoRaizes = new List();
+    public static List listaRaizes = new List();
+    public static List listaFilhos = new List();
+    public static ArrayList<GenTree> listaArvores = new ArrayList<>();
     
   public static void main(String args[]) throws Exception{
       PrintWriter writer;
-      FileReader fileRead = new FileReader("casos/caso110");
+      FileReader fileRead = new FileReader("casos/caso108");
       BufferedReader lerArq = new BufferedReader(fileRead);
       String lineBeingRead = lerArq.readLine(); // lê a primeira linha
       
@@ -23,76 +25,65 @@ public class percentTree{
         // Retira espaços
         twoPointsSplit[0] = twoPointsSplit[0].split(" ")[0];
         twoPointsSplit[1] = twoPointsSplit[1].substring(1);
-        
-        listaPossiveisRaizes.insert(twoPointsSplit[0]);
-        
-        String [] espaceSplit = twoPointsSplit[1].split(" ");
-        
-        for(int i=0; i<= espaceSplit.length-1; i++){
-            if(!(espaceSplit[i].matches("[0-9]+"))){
-                if(listaPossiveisRaizes.exist(espaceSplit[i]))
-                    listaPossiveisRaizes.remove(espaceSplit[i]);
-                listaNaoRaizes.insert(espaceSplit[i]);
+        listaRaizes.insert(twoPointsSplit[0]);
+        //listaRaizes.insert(twoPointsSplit[0]);
+        // Se o nodo raiz dessa subarvore já é filho de uma outra árvore
+        if(listaFilhos.exist(twoPointsSplit[0])){
+            String [] espaceSplit = twoPointsSplit[1].split(" ");
+            for(GenTree arvore : listaArvores){
+                if(arvore.exist(twoPointsSplit[0])){
+                    for(int i=0; i<= espaceSplit.length-1; i++){
+                        if(!(espaceSplit[i].matches("[0-9]+"))){
+                           arvore.insert(twoPointsSplit[0], espaceSplit[i], Integer.parseInt(espaceSplit[i+1]));
+                           //arvore.printH();
+                        }
+                    }
+                    listaRaizes.remove(twoPointsSplit[0]);
+                    listaFilhos.insert(twoPointsSplit[0]);
+                }
             }
-                
+            lineBeingRead = lerArq.readLine();
+            break;
+        }else{
+            String [] espaceSplit = twoPointsSplit[1].split(" ");
+            T = new GenTree(twoPointsSplit[0],0);
+            for(int i=0; i<= espaceSplit.length-1; i++){
+                if(!(espaceSplit[i].matches("[0-9]+"))){
+                    if(listaRaizes.exist(espaceSplit[i])){
+                        for(GenTree arvore : listaArvores){
+                            if(arvore.isRoot(arvore,espaceSplit[i])){
+                                arvore.setValue(arvore.getRoot(arvore), Integer.parseInt(espaceSplit[i+1]));
+                                T.appendThree(arvore.getRoot(arvore),T.getChildList(T));
+                                listaRaizes.remove(espaceSplit[i]);
+                                listaArvores.remove(arvore);
+                                listaFilhos.insert(espaceSplit[i]);
+                                break;
+                            }
+                        }
+                        continue;
+                    }
+                    listaFilhos.insert(espaceSplit[i]);
+                    T.insert(twoPointsSplit[0], espaceSplit[i], Integer.parseInt(espaceSplit[i+1]));
+                }
+            }
+            //T.printH();
+            listaArvores.add(T);
         }
         
         lineBeingRead = lerArq.readLine();
       }
       
-      for(int i=0; i<listaPossiveisRaizes.getSize(); i++){
-        if(listaPossiveisRaizes.getSize() == 1) break;
-        String iPossiveisRaizes = listaPossiveisRaizes.get(i);
-        for(int j=0; j<listaNaoRaizes.getSize(); j++){
-            String iNaoRaizes = listaNaoRaizes.get(j);
-            if(iNaoRaizes.equals(iPossiveisRaizes)){
-                listaPossiveisRaizes.remove(iNaoRaizes);
-                i = i-1;
-                break;
-            }
-        }
-      }
+      T = listaArvores.get(0);
       
-      String raiz = listaPossiveisRaizes.get(0);
+      T.arrumaValores();
       
-      T = new GenTree (raiz, 100);
-      
-      
-      buildStructure(raiz,100);
+      //buildStructure(T.getName(T.getRoot(T)),100);
       
       //T.printDot();
       
-      System.out.println("Nodo Raiz: " + raiz);
+      //System.out.println("Nodo Raiz: " + );
       System.out.println("Nodo com maior probabilidade de ocorrer: " + T.getBigProbability());
  
-  }
-  
-  private static void buildStructure(String append,int percent) throws IOException{
-      FileReader fileRead = new FileReader("casos/caso110");
-      BufferedReader lerArq = new BufferedReader(fileRead);
-      String lineBeingRead = lerArq.readLine(); // lê a primeira linha
-      if(lineBeingRead == null) return;
-      while(lineBeingRead != null){
-        String [] twoPointsSplit = lineBeingRead.split(":");
-        if(twoPointsSplit[0].substring(0,twoPointsSplit[0].indexOf(" ")).equals(append)){
-            String [] spaceSplit = twoPointsSplit[1].substring(1).split(" ");
-            for(int i=0; i<spaceSplit.length;){
-                String pai = twoPointsSplit[0].substring(0,twoPointsSplit[0].indexOf(" "));
-                String nome = spaceSplit[i];
-                int valor = Integer.parseInt(spaceSplit[i+1]);
-                int k = (int)(percent*((float)valor/100.0f));
-                T.insert(pai,nome,k);
-                i = i+2;
-            }
-            for(int i=0; i<spaceSplit.length;){
-                buildStructure(spaceSplit[i],(int)(percent*((float)Integer.parseInt(spaceSplit[i+1])/100.0f)));
-                i = i+2;
-            }
-            return;
-        }
-        
-        lineBeingRead = lerArq.readLine();
-      }
   }
  
 }
