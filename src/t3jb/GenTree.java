@@ -14,8 +14,6 @@ public class GenTree {
       name = newName;
       children = null;
     }
-
-    Node Children( )      { return children; }
   }
 
   private static class Node {
@@ -23,8 +21,6 @@ public class GenTree {
     Node next;
 
     Node( TreeNode n )    { child = n; next = null; }
-    Node Next( )          { return next; }
-    TreeNode Child( )     { return child; }
   }
 
   private Node append( Node n, TreeNode tnode ) {
@@ -37,12 +33,12 @@ public class GenTree {
       return t.root;
   }
   
-  public void setValue(TreeNode n, int value){
-      n.data = value;
+  public String getRootName(GenTree T){
+      return T.root.name;
   }
   
-  public String getName(TreeNode n){
-      return n.name;
+  public void setValue(TreeNode n, int value){
+      n.data = value;
   }
   
   public Node getChildList(GenTree t){
@@ -50,8 +46,7 @@ public class GenTree {
   }
   
   public boolean isRoot(GenTree t, String raiz){
-      if(t.root.name.equals(raiz)) return true;
-      return false;
+      return t.root.name.equals(raiz);
   }
   
   public void appendThree(TreeNode n, Node listaFilhos){
@@ -70,11 +65,11 @@ public class GenTree {
   private TreeNode find( TreeNode n, String val ) {
     if ( n == null ) return null;
     if ( n.name.equals(val) ) return n;
-    Node f = n.Children();
+    Node f = n.children;
     while ( f != null ) {
-      TreeNode ax = find( f.Child(), val );
+      TreeNode ax = find( f.child, val );
       if ( ax != null ) return ax;
-      f = f.Next();
+      f = f.next;
     }
     return null;
   }
@@ -95,10 +90,10 @@ public class GenTree {
 	for(int i=1;i<=tabs;i++) System.out.print("  ");
 	System.out.println("<" + n.name + ">");
 	//System.out.println(n.data);
-	Node f = n.Children();
+	Node f = n.children;
     while ( f != null ) {
-      printH(f.Child(),tabs+1);
-      f = f.Next();
+      printH(f.child,tabs+1);
+      f = f.next;
     }
 	for(int i=1;i<=tabs;i++) System.out.print("  ");
 	System.out.println("</" + n.name + ">");
@@ -113,11 +108,11 @@ public class GenTree {
   
   private void printDot(TreeNode n){
      if(n == null) return;
-     Node f = n.Children();
+     Node f = n.children;
      while(f != null){
-        System.out.println(n.name + " -> " + f.Child().name);
-        printDot(f.Child());
-        f = f.Next();
+        System.out.println(n.name + " -> " + f.child.name);
+        printDot(f.child);
+        f = f.next;
      }
   }
   
@@ -131,12 +126,12 @@ public class GenTree {
   {
         boolean res = false;
 	if(n.name.equals(name)) res = true;
-	Node f=n.Children();
+	Node f=n.children;
 	while(f!=null)
 	{
-		boolean val = exist(f.Child(),name);
+		boolean val = exist(f.child,name);
 		if(val == true) res = true;	
-		f=f.Next();		
+		f=f.next;		
 	}
 	return res;	
   }
@@ -150,7 +145,7 @@ public class GenTree {
     if(n.children == null) return n;
     int percent = 0;
     TreeNode chosen = n;
-    Node f = n.Children();
+    Node f = n.children;
     while(f!=null){
         TreeNode aux = getBigProbability(f.child);
         if(aux.data > percent){
@@ -178,7 +173,6 @@ public class GenTree {
           arrumaValores(f.child,n.data);
           f = f.next;
       }
-      return;
   }
 
 }
