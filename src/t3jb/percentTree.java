@@ -16,7 +16,7 @@ public class percentTree{
     
   public static void main(String args[]) throws Exception{
       PrintWriter writer;
-      FileReader fileRead = new FileReader("casos/caso112");
+      FileReader fileRead = new FileReader("casos/caso115");
       BufferedReader lerArq = new BufferedReader(fileRead);
       
       String lineBeingRead = lerArq.readLine(); // lê a primeira linha
@@ -24,6 +24,7 @@ public class percentTree{
       
       // Começa o laço que irá ler o arquivo
       while(lineBeingRead != null){
+        // Imprime a linha (a fim de debugar)
         if(cont%1000 == 0) System.out.println("Estou lendo a linha: "+cont);
         String [] twoPointsSplit = lineBeingRead.split(":");
         
@@ -98,15 +99,15 @@ public class percentTree{
                             pela árvore que possua este cara como raiz.
                         */
                         for(GenTree arvore : listaArvores){
-                            if(arvore.isRoot(arvore,espaceSplit[i])){
+                            if(arvore.isRoot(espaceSplit[i])){
                                 
                                 /*
                                     Assim que achar a árvore cujo o cara é a raiz, seta o valor
                                     dele para o valor definido na linha (VIDE OBS1) e pindura
                                     esta árvore na nossa árvore recém criada
                                 */
-                                arvore.setValue(arvore.getRoot(arvore), Integer.parseInt(espaceSplit[i+1]));
-                                T.appendThree(arvore.getRoot(arvore),T.getChildList(T));
+                                arvore.setValue(espaceSplit[i+1]);
+                                T.appendThree(arvore);
                                 
                                 /*
                                     Como esta árvore foi pindurada na nova, o cara que era raiz dela
@@ -123,9 +124,6 @@ public class percentTree{
                                 break;
                             }
                         }
-                        
-                        // Continua o for
-                        continue;
                     }else{
                         /*
                             Caso o filho analisado não seja raiz de uma árvore já existente,
@@ -174,7 +172,24 @@ public class percentTree{
       
       System.out.println("Nodo Raiz: " + T.getRootName(T));
       System.out.println("Nodo com maior probabilidade de ocorrer: " + T.getBigProbability());
- 
+      
+      /* OBS1:
+        As linhas do arquivo teste possuem o seguinte formato:
+        nomePai : nomeFilho1 valorFilho1 nomeFilho2 valorFilho2 ...
+        Portanto, no momento no qual criamos uma subárvore, o pai, que será a raiz dessa subárvore
+        não possui valor a ser atribuido. Então, por uma questão de escolha seu valor será setado como 0
+        A questão é, se este nodo pai não for a raiz da árvore final, ele terá que ser pindurado em uma
+        outra árvore em algum momento. Então no momento que pararmos em uma linha que diz que este nodo
+        pai é filho da árvore desta linha, automaticamente o valor deste nodo pai (no momento 0) estará
+        escrito logo após o seu nome. Agora basta, no momento que pindurarmos este pai junto com a sua
+        estrutura na nova árvore, setarmos o seu valor para o indicado na linha.
+      
+        Ao final do processo inteiro, todos os nodos DEVEM possuir um valor positivo e diferente de 0,
+        menos um: a raiz da árvore final. Como ela não é filho de ninguém, não possui nenhuma linha que
+        referencia ela com o seu valor jutamente. Porém, por definição do trabalho, a raiz da árvore deve
+        possuir valor 100, então basta na hora de arrumar os valores de árvore, setarmos antes de tudo o
+        valor da raiz para 100, assim, todos os nodos terão valores positivos não nulos.
+      */
   }
  
 }

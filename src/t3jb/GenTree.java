@@ -29,34 +29,31 @@ public class GenTree {
     return n;
   }
   
-  public TreeNode getRoot(GenTree t){
-      return t.root;
-  }
-  
+  // Retorna o nome do nodo raiz
   public String getRootName(GenTree T){
       return T.root.name;
   }
   
-  public void setValue(TreeNode n, int value){
-      n.data = value;
+  // Seta um valor para a raiz da árvore
+  public void setValue(String value){
+      root.data = Integer.parseInt(value);
   }
   
-  public Node getChildList(GenTree t){
-      return t.root.children;
+  // Verifica se a string enviada é igual ao nome da raiz
+  public boolean isRoot(String raiz){
+      return root.name.equals(raiz);
   }
   
-  public boolean isRoot(GenTree t, String raiz){
-      return t.root.name.equals(raiz);
-  }
-  
-  public void appendThree(TreeNode n, Node listaFilhos){
+  // Pindura uma árvore já existente nessa árvore
+  public void appendThree(GenTree n){
+      Node listaFilhos = root.children;
       if(listaFilhos==null){
-          listaFilhos = new Node(n);
+          listaFilhos = new Node(n.root);
           this.root.children = listaFilhos;
           return;
       }
       while(listaFilhos.next != null) listaFilhos = listaFilhos.next;
-      listaFilhos.next = new Node (n);
+      listaFilhos.next = new Node (n.root);
       this.root.children = listaFilhos;
   }
 
@@ -79,7 +76,8 @@ public class GenTree {
     if ( n == null ) return;
     n.children = append( n.children, new TreeNode( s, f ) );
   }
-
+  
+  // Imrpime em formato HTML
   public void printH( ) {
     printH ( root,0 );
 	System.out.println();
@@ -100,6 +98,7 @@ public class GenTree {
 	//System.out.print(")");    
   }
   
+  // Imprime em formato para passar para o programa que cria árvores
   public void printDot(){
      System.out.println("digraph G {\n\tgraph [layout=dot]");
      printDot(root);
@@ -116,6 +115,7 @@ public class GenTree {
      }
   }
   
+  // Verifica se existe um nodo na árvore com o nome = name
   public boolean exist(String name)
   {		
 	if(root == null) return false;
@@ -136,6 +136,7 @@ public class GenTree {
 	return res;	
   }
   
+  // Resgata a folha com maior probabilidade de acontecer
   public String getBigProbability(){
     TreeNode result = getBigProbability(root);
     return result.name + " - " + result.data + "%"; 
@@ -157,6 +158,7 @@ public class GenTree {
     return chosen;
   }
   
+  // Arruma os valores da árvore
   public void arrumaValores(){
       root.data = 100;
       Node f = root.children;
