@@ -1,7 +1,6 @@
 package t3jb;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
@@ -10,12 +9,13 @@ public class percentTree{
     
     private static GenTree T;
     
-    private static ArrayList<GenTree> listaArvores = new ArrayList<>();
-    private static Set<String> listaRaizes = new TreeSet<>();
-    private static Set<String> listaFilhos = new TreeSet<>();
+    private static final ArrayList<GenTree> listaArvores = new ArrayList<>();
+    private static final Set<String> listaRaizes = new TreeSet<>();
+    private static final Set<String> listaFilhos = new TreeSet<>();
     
   public static void main(String args[]) throws Exception{
-      PrintWriter writer;
+      
+      long startTime = System.currentTimeMillis();
       FileReader fileRead = new FileReader("casos/caso115");
       BufferedReader lerArq = new BufferedReader(fileRead);
       
@@ -170,8 +170,10 @@ public class percentTree{
         probabilidade de ser criado.
       */
       
+      long endTime = System.currentTimeMillis();
       System.out.println("Nodo Raiz: " + T.getRootName(T));
       System.out.println("Nodo com maior probabilidade de ocorrer: " + T.getBigProbability());
+      System.out.println("Tempo de execução: " + (endTime - startTime)/1000.0 + " segundos");
       
       /* OBS1:
         As linhas do arquivo teste possuem o seguinte formato:
