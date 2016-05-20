@@ -45,16 +45,8 @@ public class GenTree {
   }
   
   // Pindura uma árvore já existente nessa árvore
-  public void appendThree(GenTree n){
-      Node listaFilhos = root.children;
-      if(listaFilhos==null){
-          listaFilhos = new Node(n.root);
-          this.root.children = listaFilhos;
-          return;
-      }
-      while(listaFilhos.next != null) listaFilhos = listaFilhos.next;
-      listaFilhos.next = new Node (n.root);
-      this.root.children = listaFilhos;
+  public void appendTree(GenTree n){
+      root.children = append(root.children,n.root);
   }
 
   public GenTree( String s, int n ) { root = new TreeNode( s, n ); }
@@ -138,24 +130,21 @@ public class GenTree {
   
   // Resgata a folha com maior probabilidade de acontecer
   public String getBigProbability(){
-    TreeNode result = getBigProbability(root);
+    TreeNode result = getBigProbability(root, new TreeNode("comparador",0));
     return result.name + " - " + result.data + "%"; 
   }
   
-  private TreeNode getBigProbability(TreeNode n){
-    if(n.children == null) return n;
-    int percent = 0;
-    TreeNode chosen = n;
-    Node f = n.children;
-    while(f!=null){
-        TreeNode aux = getBigProbability(f.child);
-        if(aux.data > percent){
-            percent = aux.data;
-            chosen = aux;
-        }
-        f = f.next;
-    }
-    return chosen;
+  private TreeNode getBigProbability(TreeNode n, TreeNode maior){
+      Node filho = n.children;
+      
+      while(filho!=null){
+          TreeNode aux = filho.child;
+          if(aux.children == null && aux.data > maior.data) maior = getBigProbability(aux,aux);
+          else maior = getBigProbability(aux,maior);
+          filho = filho.next;
+      }
+      return maior;
+      
   }
   
   // Arruma os valores da árvore
@@ -169,7 +158,7 @@ public class GenTree {
   }
   
   private void arrumaValores(TreeNode n, int value){
-      n.data = (int)(value*((float)n.data/100.0f));
+      n.data = (n.data*value)/100;
       Node f = n.children;
       while(f != null){
           arrumaValores(f.child,n.data);

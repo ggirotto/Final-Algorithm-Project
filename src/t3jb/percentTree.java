@@ -3,20 +3,20 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
  
 public class percentTree{
     
     private static GenTree T;
     
     private static final ArrayList<GenTree> listaArvores = new ArrayList<>();
-    private static final Set<String> listaRaizes = new TreeSet<>();
-    private static final Set<String> listaFilhos = new TreeSet<>();
+    private static final Set<String> listaRaizes = new HashSet<>();
+    private static final Set<String> listaFilhos = new HashSet<>();
     
   public static void main(String args[]) throws Exception{
       
       long startTime = System.currentTimeMillis();
-      FileReader fileRead = new FileReader("casos/caso115");
+      FileReader fileRead = new FileReader("casos/caso215");
       BufferedReader lerArq = new BufferedReader(fileRead);
       
       String lineBeingRead = lerArq.readLine(); // lê a primeira linha
@@ -107,7 +107,7 @@ public class percentTree{
                                     esta árvore na nossa árvore recém criada
                                 */
                                 arvore.setValue(espaceSplit[i+1]);
-                                T.appendThree(arvore);
+                                T.appendTree(arvore);
                                 
                                 /*
                                     Como esta árvore foi pindurada na nova, o cara que era raiz dela
