@@ -36,7 +36,7 @@ public class GenTree {
   
   // Seta um valor para a raiz da árvore
   public void setValue(String value){
-      root.data = Integer.parseInt(value);
+      root.data = Float.parseFloat(value);
   }
   
   // Verifica se a string enviada é igual ao nome da raiz
@@ -67,27 +67,6 @@ public class GenTree {
     TreeNode n = find( root, p );
     if ( n == null ) return;
     n.children = append( n.children, new TreeNode( s, f ) );
-  }
-  
-  // Imrpime em formato HTML
-  public void printH( ) {
-    printH ( root,0 );
-	System.out.println();
-  }
-
-  private void printH( TreeNode n, int tabs ) {
-	if(n==null) return;
-	for(int i=1;i<=tabs;i++) System.out.print("  ");
-	System.out.println("<" + n.name + ">");
-	//System.out.println(n.data);
-	Node f = n.children;
-    while ( f != null ) {
-      printH(f.child,tabs+1);
-      f = f.next;
-    }
-	for(int i=1;i<=tabs;i++) System.out.print("  ");
-	System.out.println("</" + n.name + ">");
-	//System.out.print(")");    
   }
   
   // Imprime em formato para passar para o programa que cria árvores
