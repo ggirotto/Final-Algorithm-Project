@@ -10,7 +10,14 @@ public class percentTree{
     
     private static GenTree T;
     
+    /*
+        HashMap que possui o seguinte formato: nomeRaiz -> árvore;
+    */
     private static final Map <String, GenTree> listaRefs = new HashMap<>();
+    
+    /*
+        Lista dos nodos que são raizes
+    */
     private static final Set<String> listaRaizes = new HashSet<>();
     
   public static void main(String args[]) throws Exception{
@@ -29,23 +36,18 @@ public class percentTree{
         // Imprime a linha (a fim de debugar)
         if(cont%1000 == 0) System.out.println("Linha: "+cont);
         
-        String [] twoPointsSplit = lineBeingRead.split(":");
-        
-        // Retira espaços
-        twoPointsSplit[0] = twoPointsSplit[0].trim();
-        twoPointsSplit[1] = twoPointsSplit[1].trim();
+        String [] twoPointsSplit = lineBeingRead.split("(\\s)*:(\\s)*");
         
         listaRaizes.add(twoPointsSplit[0]);
             /*
-                O nodo raiz desta subárvore não é filho de ninguém, portanto teremos
-                que criar uma árvore colocando-o como raiz, e adicionar seus filhos
-                a esta árvore recém criada
+                Primeiro é necessário criar uma árvore colocando o nodo raiz
+                desta subárvore como raiz, e adicionar seus filhos a esta
+                árvore recém criada
             */
             String [] espaceSplit = twoPointsSplit[1].split(" ");
             
             // Cria a árvore
             T = new GenTree(twoPointsSplit[0],0);
-            listaRefs.put(twoPointsSplit[0], T);
             
             for(int i=0; i<= espaceSplit.length-1; i+=2){
                     
@@ -58,25 +60,24 @@ public class percentTree{
                     if(listaRaizes.contains(espaceSplit[i])){
                         
                         /*
-                            Neste caso, iremos percorrer a lista de árvores procurando
-                            pela árvore que possua este cara como raiz.
+                            Neste caso, pegaremos a árvore que possui este nodo como raiz
                         */
                         GenTree arvore = listaRefs.get(espaceSplit[i]);
                                 
                                 /*
-                                    Assim que achar a árvore cujo o cara é a raiz, seta o valor
-                                    dele para o valor definido na linha (VIDE OBS1) e pindura
-                                    esta árvore na nossa árvore recém criada
+                                    Agora, setamos o valor dele para o valor definido
+                                    na linha (VIDE OBS1) e pindura esta árvore na nossa
+                                    árvore recém criada
                                 */
                                 arvore.setValue(espaceSplit[i+1]);
                                 T.appendTree(arvore);
                                 
                                 /*
                                     Como esta árvore foi pindurada na nova, o cara que era raiz dela
-                                    deixou de ser raiz e virou filho da nova subárvore (logo deve ser
-                                    removido da lista de raizes e adicionado na lista de filhos) esta
-                                    árvore que foi pindurada deixou de ser uma árvore única e virou uma
-                                    subárvore da recém criada (logo deve ser removida da lista de árvores)
+                                    deixou de ser raiz e virou filho da nova subárvore, logo, deve ser
+                                    removido da lista de raizes. Esta árvore que foi pindurada deixou
+                                    de ser uma árvore única e virou uma subárvore da recém criada, logo,
+                                    deve ser removida da lista de referencias.
                                 */
                                 listaRaizes.remove(espaceSplit[i]);
                                 listaRefs.remove(espaceSplit[i]);
@@ -84,21 +85,20 @@ public class percentTree{
                         /*
                             Caso o filho analisado não seja raiz de uma árvore já existente,
                             insere ele com seu valor, como filho do nodo raiz desta nossa subárvore,
-                            em outras palavras, continua montando a subárvore
-                            (e adiciona ele na lista de filhos)
+                            em outras palavras, continua montando a subárvore.
                         */
                         T.insert(twoPointsSplit[0], espaceSplit[i], Integer.parseInt(espaceSplit[i+1]));
                     }
             }
-            // Adiciona a árvore criada na lista de árvores
-            //listaArvores.add(T);
+            // Adiciona a árvore criada no HashMap. A chave de acesso é o nome da raiz
+            listaRefs.put(twoPointsSplit[0], T);
         
-        lineBeingRead = lerArq.readLine();
+        lineBeingRead = lerArq.readLine(); // Lê a próxima linha
         cont++;
       }
       
       /*
-        No final da construção acima, a nossa lista de árvores deverá resultar com
+        No final da construção acima, a nossa lista de referências deverá resultar com
         somente UMA árvore dentro, que será a árvore final montada de maneira correta
         a partir das informações do arquivo. Então pegamos ela e atribuimos ao nome T
       */
