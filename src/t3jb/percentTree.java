@@ -1,78 +1,41 @@
 package t3jb;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
  
 public class percentTree{
     
     private static GenTree T;
     
-    private static final ArrayList<GenTree> listaArvores = new ArrayList<>();
+    private static final Map <String, GenTree> listaRefs = new HashMap<>();
     private static final Set<String> listaRaizes = new HashSet<>();
-    private static final Set<String> listaFilhos = new HashSet<>();
     
   public static void main(String args[]) throws Exception{
       
       long startTime = System.currentTimeMillis();
-      FileReader fileRead = new FileReader("casos/caso215");
+      FileReader fileRead = new FileReader("casos/caso115");
       BufferedReader lerArq = new BufferedReader(fileRead);
       
       String lineBeingRead = lerArq.readLine(); // lê a primeira linha
       int cont = 1;
       
       // Começa o laço que irá ler o arquivo
+      
       while(lineBeingRead != null){
+          
         // Imprime a linha (a fim de debugar)
-        if(cont%1000 == 0) System.out.println("Estou lendo a linha: "+cont);
+        if(cont%1000 == 0) System.out.println("Linha: "+cont);
+        
         String [] twoPointsSplit = lineBeingRead.split(":");
         
         // Retira espaços
         twoPointsSplit[0] = twoPointsSplit[0].trim();
         twoPointsSplit[1] = twoPointsSplit[1].trim();
         
-        /*
-            Assumimos que teremos que criar uma subárvore, então o nodo pai de todos
-            é adicionado na lista de raizes. (não significa que teremos uma subárvore,
-            isso descobriremos no if abaixo.
-        */
-        
         listaRaizes.add(twoPointsSplit[0]);
-        
-        /*
-            Se o nodo raiz dessa subárvore já é filho de uma outra árvore, significa
-            que não teremos que criar uma subárvore, e sim pindurar estes filhos com seus
-            respectivos valores embaixo deste cara que já existe em alguma outra árvore
-        */
-        if(listaFilhos.contains(twoPointsSplit[0])){
-            String [] espaceSplit = twoPointsSplit[1].split(" ");
-            
-            // Percorre a lista de árvores procurando pela árvore que tenha este cara como elemento
-            for(GenTree arvore : listaArvores){
-                if(arvore.exist(twoPointsSplit[0])){
-                    
-                    /* 
-                        Para cada filho da linha sendo lida, adicionar ele e seu valor como filho
-                        do nodo encontrado nesta árvore.
-                    */
-                    for(int i=0; i<= espaceSplit.length-1; i++){
-                        if(!(espaceSplit[i].matches("[0-9]+"))){
-                           arvore.insert(twoPointsSplit[0], espaceSplit[i], Integer.parseInt(espaceSplit[i+1]));
-                        }
-                    }
-                    
-                    /*
-                        Assim, descobrimos que ele não é uma nova subárvore, pois ele já existe
-                        Como tinhamos assumido que twoPointsSplit[0] ia ser a raiz de uma subárvore
-                        e ja o adicionamos de cara na lista de raizes, agora devemos remover ele
-                        desta lisa, e adicioná-lo na lista de filhos
-                    */
-                    listaRaizes.remove(twoPointsSplit[0]);
-                    listaFilhos.add(twoPointsSplit[0]);
-                }
-            }
-        }else{
             /*
                 O nodo raiz desta subárvore não é filho de ninguém, portanto teremos
                 que criar uma árvore colocando-o como raiz, e adicionar seus filhos
@@ -82,9 +45,9 @@ public class percentTree{
             
             // Cria a árvore
             T = new GenTree(twoPointsSplit[0],0);
+            listaRefs.put(twoPointsSplit[0], T);
             
-            for(int i=0; i<= espaceSplit.length-1; i++){
-                if(!(espaceSplit[i].matches("[0-9]+"))){
+            for(int i=0; i<= espaceSplit.length-1; i+=2){
                     
                     /*
                         Se o nodo que queremos pindurar nesta árvore recém criada está
@@ -98,8 +61,7 @@ public class percentTree{
                             Neste caso, iremos percorrer a lista de árvores procurando
                             pela árvore que possua este cara como raiz.
                         */
-                        for(GenTree arvore : listaArvores){
-                            if(arvore.isRoot(espaceSplit[i])){
+                        GenTree arvore = listaRefs.get(espaceSplit[i]);
                                 
                                 /*
                                     Assim que achar a árvore cujo o cara é a raiz, seta o valor
@@ -117,13 +79,7 @@ public class percentTree{
                                     subárvore da recém criada (logo deve ser removida da lista de árvores)
                                 */
                                 listaRaizes.remove(espaceSplit[i]);
-                                listaArvores.remove(arvore);
-                                listaFilhos.add(espaceSplit[i]);
-                                
-                                // Sai do for(?)
-                                break;
-                            }
-                        }
+                                listaRefs.remove(espaceSplit[i]);
                     }else{
                         /*
                             Caso o filho analisado não seja raiz de uma árvore já existente,
@@ -132,14 +88,10 @@ public class percentTree{
                             (e adiciona ele na lista de filhos)
                         */
                         T.insert(twoPointsSplit[0], espaceSplit[i], Integer.parseInt(espaceSplit[i+1]));
-                        listaFilhos.add(espaceSplit[i]);
                     }
-                    
-                }
             }
             // Adiciona a árvore criada na lista de árvores
-            listaArvores.add(T);
-        }
+            //listaArvores.add(T);
         
         lineBeingRead = lerArq.readLine();
         cont++;
@@ -150,8 +102,9 @@ public class percentTree{
         somente UMA árvore dentro, que será a árvore final montada de maneira correta
         a partir das informações do arquivo. Então pegamos ela e atribuimos ao nome T
       */
-      T = listaArvores.get(0);
-      
+      for (GenTree tree: listaRefs.values()) {
+        T = tree;
+      }
       /*
         Note que cada nodo da árvore contruída possui como dado, a porcentagem do dado
         do seu pai, ainda não calculada.

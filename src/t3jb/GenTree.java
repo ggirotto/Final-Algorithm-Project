@@ -3,11 +3,11 @@ package t3jb;
 public class GenTree {
 
   private TreeNode root;
-
+  
   private static class TreeNode {
     Node children;
     String name;
-    int data;
+    float data;
 
     TreeNode( String newName, int newData ) {
       data = newData;
@@ -107,43 +107,37 @@ public class GenTree {
      }
   }
   
-  // Verifica se existe um nodo na árvore com o nome = name
-  public boolean exist(String name)
-  {		
-	if(root == null) return false;
-	return exist(root,name);
+  // Imprime nome -> data
+  public void printData(){
+     printData(root);
   }
-
-  private boolean exist(TreeNode n,String name)
-  {
-        boolean res = false;
-	if(n.name.equals(name)) res = true;
-	Node f=n.children;
-	while(f!=null)
-	{
-		boolean val = exist(f.child,name);
-		if(val == true) res = true;	
-		f=f.next;		
-	}
-	return res;	
+  
+  private void printData(TreeNode n){
+     if(n == null) return;
+     Node f = n.children;
+     while(f != null){
+        System.out.println(n.name + " -> " + n.data);
+        printData(f.child);
+        f = f.next;
+     }
   }
   
   // Resgata a folha com maior probabilidade de acontecer
   public String getBigProbability(){
-    TreeNode result = getBigProbability(root, new TreeNode("comparador",0));
-    return result.name + " - " + result.data + "%"; 
+    return getBigProbability(root).name;
   }
   
-  private TreeNode getBigProbability(TreeNode n, TreeNode maior){
-      Node filho = n.children;
-      
-      while(filho!=null){
-          TreeNode aux = filho.child;
-          if(aux.children == null && aux.data > maior.data) maior = getBigProbability(aux,aux);
-          else maior = getBigProbability(aux,maior);
-          filho = filho.next;
+  private TreeNode getBigProbability(TreeNode n){
+      if(n.children == null) return n;
+      Node f = n.children;
+      TreeNode save = new TreeNode("compare",0);
+      TreeNode leaf;
+      while(f!=null){
+          leaf = getBigProbability(f.child);
+          if(leaf.data > save.data) save = leaf;
+          f = f.next;
       }
-      return maior;
+      return save;
       
   }
   
@@ -157,7 +151,7 @@ public class GenTree {
       }
   }
   
-  private void arrumaValores(TreeNode n, int value){
+  private void arrumaValores(TreeNode n, float value){
       n.data = (n.data*value)/100;
       Node f = n.children;
       while(f != null){
