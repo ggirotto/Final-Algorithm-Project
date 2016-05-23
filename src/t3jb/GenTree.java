@@ -7,7 +7,7 @@ public class GenTree {
   private static class TreeNode {
     Node children;
     String name;
-    float data;
+    double data;
 
     TreeNode( String newName, int newData ) {
       data = newData;
@@ -127,7 +127,7 @@ public class GenTree {
       arrumaValores(root,100);
   }
   
-  private void arrumaValores(TreeNode n, float value){
+  private void arrumaValores(TreeNode n, double value){
       n.data = (n.data*value)/100;
       Node f = n.children;
       while(f != null){
@@ -137,7 +137,7 @@ public class GenTree {
   }
   
   public String stepUntilNode(String nodeName){
-      return stepUntilNode(root,nodeName,"");
+      return stepUntilNode(root,nodeName," " + root.name);
   }
   
   private String stepUntilNode(TreeNode n, String nodeName, String rode){
@@ -148,7 +148,7 @@ public class GenTree {
       }
       Node f = n.children;
       while(f!=null){
-          if(rode.contains("-> "+n.name))
+          if(rode.contains(" "+n.name))
             result = stepUntilNode(f.child,nodeName,rode);
           else
             result = stepUntilNode(f.child,nodeName,rode+=" -> "+n.name);
