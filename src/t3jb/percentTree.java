@@ -23,7 +23,7 @@ public class percentTree{
   public static void main(String args[]) throws Exception{
       
       long startTime = System.currentTimeMillis();
-      FileReader fileRead = new FileReader("casos/caso115");
+      FileReader fileRead = new FileReader("casos/caso108");
       BufferedReader lerArq = new BufferedReader(fileRead);
       
       String lineBeingRead = lerArq.readLine(); // lê a primeira linha
@@ -116,7 +116,10 @@ public class percentTree{
         Exemplo, o nodo x possui dado 15 e seu filho y possui dado 30, logo, o nodo y deverá atualziar
         o seu valor para 30% do valor 15.
       */
+      
+      //T.printDot();
       T.arrumaValores();
+      //T.printDot();
       
       /*
         Com tudo pronto, podemos imprimir quem é a raiz de cada caso teste e o nodo com maior
@@ -125,7 +128,10 @@ public class percentTree{
       
       long endTime = System.currentTimeMillis();
       System.out.println("Nodo Raiz: " + T.getRootName(T));
-      System.out.println("Nodo com maior probabilidade de ocorrer: " + T.getBigProbability());
+      System.out.println("Nodo com maior probabilidade de ocorrer- " + T.getBigProbability());
+      String bigProb = T.getBigProbability();
+      String result = bigProb.substring(bigProb.indexOf(" "), bigProb.indexOf(" Valor")).trim();
+      System.out.println("Caminho até o nodo com maior probabilidade " + T.stepUntilNode(result));
       System.out.println("Tempo de execução: " + (endTime - startTime)/1000.0 + " segundos");
       
       /* OBS1:

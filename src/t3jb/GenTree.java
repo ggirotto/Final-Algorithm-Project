@@ -80,7 +80,7 @@ public class GenTree {
      if(n == null) return;
      Node f = n.children;
      while(f != null){
-        System.out.println(n.name + " -> " + f.child.name);
+        System.out.println(n.name + "(" + n.data + ")" + " -> " + f.child.name + "(" + f.child.data + ")");
         printDot(f.child);
         f = f.next;
      }
@@ -103,7 +103,8 @@ public class GenTree {
   
   // Resgata a folha com maior probabilidade de acontecer
   public String getBigProbability(){
-    return getBigProbability(root).name;
+    TreeNode resultado = getBigProbability(root);
+    return "Nome: " + resultado.name + "  Valor: " + resultado.data;
   }
   
   private TreeNode getBigProbability(TreeNode n){
@@ -123,11 +124,7 @@ public class GenTree {
   // Arruma os valores da árvore
   public void arrumaValores(){
       root.data = 100;
-      Node f = root.children;
-      while(f!=null){
-          arrumaValores(f.child,100);
-          f = f.next;
-      }
+      arrumaValores(root,100);
   }
   
   private void arrumaValores(TreeNode n, float value){
@@ -137,6 +134,28 @@ public class GenTree {
           arrumaValores(f.child,n.data);
           f = f.next;
       }
+  }
+  
+  public String stepUntilNode(String nodeName){
+      return stepUntilNode(root,nodeName,"");
+  }
+  
+  private String stepUntilNode(TreeNode n, String nodeName, String rode){
+      String result = "";
+      if(n.name.equals(nodeName)) {
+          rode += " -> "+n.name;
+          return rode;
+      }
+      Node f = n.children;
+      while(f!=null){
+          if(rode.contains("-> "+n.name))
+            result = stepUntilNode(f.child,nodeName,rode);
+          else
+            result = stepUntilNode(f.child,nodeName,rode+=" -> "+n.name);
+          if(!(result.equals(""))) return result;
+          f = f.next;
+      }
+      return result;
   }
 
 }
