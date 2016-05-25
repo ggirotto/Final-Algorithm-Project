@@ -2,8 +2,6 @@ package t3jb;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Map;
  
 public class percentTree{
@@ -15,15 +13,10 @@ public class percentTree{
     */
     private static final Map <String, GenTree> listaRefs = new HashMap<>();
     
-    /*
-        Lista dos nodos que são raizes
-    */
-    private static final Set<String> listaRaizes = new HashSet<>();
-    
   public static void main(String args[]) throws Exception{
       
       long startTime = System.currentTimeMillis();
-      FileReader fileRead = new FileReader("casos/caso108");
+      FileReader fileRead = new FileReader("casos/caso215");
       BufferedReader lerArq = new BufferedReader(fileRead);
       
       String lineBeingRead = lerArq.readLine(); // lê a primeira linha
@@ -38,7 +31,6 @@ public class percentTree{
         
         String [] twoPointsSplit = lineBeingRead.split("(\\s)*:(\\s)*");
         
-        listaRaizes.add(twoPointsSplit[0]);
             /*
                 Primeiro é necessário criar uma árvore colocando o nodo raiz
                 desta subárvore como raiz, e adicionar seus filhos a esta
@@ -57,7 +49,7 @@ public class percentTree{
                         já existente, e que certamente possuirá uma estrutura com PELO MENOS
                         1 nivel de filhos.
                     */
-                    if(listaRaizes.contains(espaceSplit[i])){
+                    if(listaRefs.get(espaceSplit[i])!=null){
                         
                         /*
                             Neste caso, pegaremos a árvore que possui este nodo como raiz
@@ -79,7 +71,6 @@ public class percentTree{
                                     de ser uma árvore única e virou uma subárvore da recém criada, logo,
                                     deve ser removida da lista de referencias.
                                 */
-                                listaRaizes.remove(espaceSplit[i]);
                                 listaRefs.remove(espaceSplit[i]);
                     }else{
                         /*
