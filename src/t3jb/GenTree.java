@@ -7,7 +7,7 @@ public class GenTree {
   private static class TreeNode {
     Node children;
     String name;
-    int data;
+    double data;
 
     TreeNode( String newName, int newData ) {
       data = newData;
@@ -128,42 +128,76 @@ public class GenTree {
 	return res;	
   }
   
-  // Resgata a folha com maior probabilidade de acontecer
-  public String getBigProbability(){
-    TreeNode result = getBigProbability(root, new TreeNode("comparador",0));
-    return result.name + " - " + result.data + "%"; 
+  // Imprime nome -> data
+  public void printData(){
+     printData(root);
   }
   
-  private TreeNode getBigProbability(TreeNode n, TreeNode maior){
-      Node filho = n.children;
-      
-      while(filho!=null){
-          TreeNode aux = filho.child;
-          if(aux.children == null && aux.data > maior.data) maior = getBigProbability(aux,aux);
-          else maior = getBigProbability(aux,maior);
-          filho = filho.next;
+  private void printData(TreeNode n){
+     if(n == null) return;
+     Node f = n.children;
+     while(f != null){
+        System.out.println(n.name + " -> " + n.data);
+        printData(f.child);
+        f = f.next;
+     }
+  }
+  
+  // Resgata a folha com maior probabilidade de acontecer
+  public String getBigProbability(){
+    TreeNode resultado = getBigProbability(root);
+    return "Nome: " + resultado.name + "  Valor: " + resultado.data;
+  }
+  
+  private TreeNode getBigProbability(TreeNode n){
+      if(n.children == null) return n;
+      Node f = n.children;
+      TreeNode save = new TreeNode("compare",0);
+      TreeNode leaf;
+      while(f!=null){
+          leaf = getBigProbability(f.child);
+          if(leaf.data > save.data) save = leaf;
+          f = f.next;
       }
-      return maior;
+      return save;
       
   }
   
   // Arruma os valores da árvore
   public void arrumaValores(){
       root.data = 100;
-      Node f = root.children;
-      while(f!=null){
-          arrumaValores(f.child,100);
-          f = f.next;
-      }
+      arrumaValores(root,100);
   }
   
-  private void arrumaValores(TreeNode n, int value){
+  private void arrumaValores(TreeNode n, double value){
       n.data = (n.data*value)/100;
       Node f = n.children;
       while(f != null){
           arrumaValores(f.child,n.data);
           f = f.next;
       }
+  }
+  
+  public String stepUntilNode(String nodeName){
+      return stepUntilNode(root,nodeName," " + root.name);
+  }
+  
+  private String stepUntilNode(TreeNode n, String nodeName, String rode){
+      String result = "";
+      if(n.name.equals(nodeName)) {
+          rode += " -> "+n.name;
+          return rode;
+      }
+      Node f = n.children;
+      while(f!=null){
+          if(rode.contains(" "+n.name))
+            result = stepUntilNode(f.child,nodeName,rode);
+          else
+            result = stepUntilNode(f.child,nodeName,rode+=" -> "+n.name);
+          if(!(result.equals(""))) return result;
+          f = f.next;
+      }
+      return result;
   }
 
 }
